@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>🌹 Rose Petal Shower</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #fff;
+    }
+    .petal {
+      position: fixed;
+      top: -50px;
+      pointer-events: none;
+      z-index: 9999;
+      will-change: transform, opacity;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    const petals = [];
+    const PETAL_COUNT = 30;
+    const PETAL_IMG = 'petal.png'; // This must match your image filename
+
+    function rand(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function createPetal() {
+      const img = document.createElement('img');
+      img.src = PETAL_IMG;
+      img.className = 'petal';
+      img.style.width = rand(30, 60) + 'px';
+      img.style.left = rand(0, window.innerWidth) + 'px';
+      img.style.opacity = rand(0.6, 1);
+      document.body.appendChild(img);
+
+      const petal = {
+        el: img,
+        x: parseFloat(img.style.left),
+        y: -50,
+        vx: rand(-0.5, 0.5),
+        vy: rand(1, 2),
+        rotation: rand(0, 360),
+        vr: rand(-0.5, 0.5)
+      };
+
+      petals.push(petal);
+    }
+
+    function update() {
+      for (let i = petals.length - 1; i >= 0; i--) {
+        const p = petals[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rotation += p.vr;
+        p.el.style.transform = `translate(${p.x}px, ${p.y}px) rotate(${p.rotation}deg)`;
+
+        if (p.y > window.innerHeight + 50) {
+          p.el.remove();
+          petals.splice(i, 1);
+          createPetal();
+        }
+      }
+      requestAnimationFrame(update);
+    }
+
+    for (let i = 0; i < PETAL_COUNT; i++) createPetal();
+    requestAnimationFrame(update);
+  </script>
+</body>
+</html>
